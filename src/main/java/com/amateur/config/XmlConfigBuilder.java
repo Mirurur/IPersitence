@@ -20,7 +20,7 @@ import java.util.Properties;
  */
 public class XmlConfigBuilder {
 
-    private final Configuration configuration;
+    private Configuration configuration;
 
     public XmlConfigBuilder() {
         this.configuration = new Configuration();
@@ -60,6 +60,6 @@ public class XmlConfigBuilder {
             XmlMapperBuilder xmlMapperBuilder = new XmlMapperBuilder(configuration);
             xmlMapperBuilder.parse(mapperStream);
         }
-        return null;
+        return configuration;
     }
 }

@@ -18,6 +18,6 @@ public class SqlSessionFactoryBuilder {
         XmlConfigBuilder xmlConfigBuilder = new XmlConfigBuilder();
         Configuration configuration = xmlConfigBuilder.parseConfig(inputStream);
         // 创建SqlSessionFactory对象
-        return null;
+        return new DefaultSqlSessionFactory(configuration);
     }
 }
