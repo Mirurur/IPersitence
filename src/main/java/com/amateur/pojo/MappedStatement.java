@@ -22,6 +22,10 @@ public class MappedStatement {
      * sql
      */
     private String sql;
+    /**
+     * 是否使用缓存
+     */
+    private Boolean useCache;
 
     public String getId() {
         return id;
@@ -53,5 +57,13 @@ public class MappedStatement {
 
     public void setSql(String sql) {
         this.sql = sql;
+    }
+
+    public Boolean getUseCache() {
+        return useCache;
+    }
+
+    public void setUseCache(Boolean useCache) {
+        this.useCache = useCache;
     }
 }

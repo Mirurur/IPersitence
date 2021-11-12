@@ -1,5 +1,9 @@
 package com.amateur.pojo;
 
+import com.amateur.cache.Cache;
+import com.amateur.sqlsession.CacheExecutor;
+import com.amateur.sqlsession.SimpleExecutor;
+
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +23,13 @@ public class Configuration {
      * key: statementId
      * value: 封装好的mappedStatement对象
      */
-    Map<String,MappedStatement> mappedStatementMap = new HashMap<>();
+    private Map<String,MappedStatement> mappedStatementMap = new HashMap<>();
+
+    private CacheExecutor cacheExecutor;
+
+    public synchronized CacheExecutor newCacheExecutor() {
+        return new CacheExecutor(new SimpleExecutor());
+    }
 
     public DataSource getDataSource() {
         return dataSource;
@@ -36,4 +46,5 @@ public class Configuration {
     public void setMappedStatementMap(Map<String, MappedStatement> mappedStatementMap) {
         this.mappedStatementMap = mappedStatementMap;
     }
+
 }

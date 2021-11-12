@@ -1,6 +1,7 @@
 package com.amateur.sqlsession;
 
 import com.amateur.pojo.Configuration;
+import com.amateur.pojo.MappedStatement;
 
 import java.lang.reflect.*;
 import java.util.List;
@@ -11,7 +12,9 @@ import java.util.List;
  */
 public class DefaultSqlSession implements SqlSession {
 
-    private Configuration configuration;
+    private final Configuration configuration;
+
+    private CacheExecutor cacheExecutor;
 
     public DefaultSqlSession(Configuration configuration) {
         this.configuration = configuration;
@@ -20,15 +23,22 @@ public class DefaultSqlSession implements SqlSession {
 
     @Override
     public <E> List<E> selectList(String statementId, Object... params) throws Exception {
+        MappedStatement mappedStatement = configuration.getMappedStatementMap().get(statementId);
+        if (mappedStatement.getUseCache()) {
+            if (cacheExecutor == null) {
+                cacheExecutor = configuration.newCacheExecutor();
+            }
+            return cacheExecutor.query(configuration,mappedStatement,params);
+        }
         SimpleExecutor simpleExecutor = new SimpleExecutor();
-        return simpleExecutor.query(configuration, configuration.getMappedStatementMap().get(statementId), params);
+        return simpleExecutor.query(configuration, mappedStatement, params);
     }
 
     @Override
     public <T> T selectOne(String statementId, Object... params) throws Exception {
         List<T> objects = selectList(statementId, params);
         if (objects.size() == 1) {
-            return (T) objects.get(0);
+            return objects.get(0);
         } else {
             throw new RuntimeException("返回结果不正确");
         }

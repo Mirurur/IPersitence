@@ -1,5 +1,6 @@
 package com.amateur.sqlsession;
 
+import com.amateur.cache.Cache;
 import com.amateur.config.BoundSql;
 import com.amateur.pojo.Configuration;
 import com.amateur.pojo.MappedStatement;
@@ -10,7 +11,10 @@ import com.amateur.utils.ParameterMappingTokenHandler;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +23,9 @@ import java.util.List;
  * @date 2021/11/11 10:05
  */
 public class SimpleExecutor implements Executor {
+
     @Override
-    public <E> List<E> query(Configuration configuration, MappedStatement mappedStatement, Object... params) throws Exception{
+    public <E> List<E> query(Configuration configuration, MappedStatement mappedStatement, Object... params) throws Exception {
         // 1.注册驱动 获取数据库连接
         Connection connection = configuration.getDataSource().getConnection();
         // 2.获取sql语句 select * from user where id = #{id}
@@ -43,7 +48,7 @@ public class SimpleExecutor implements Executor {
             Field field = parameterClass.getDeclaredField(content);
             field.setAccessible(true);
             Object o = field.get(params[0]);
-            preparedStatement.setObject(i+1,o);
+            preparedStatement.setObject(i + 1, o);
         }
         // 6.执行sql
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -64,11 +69,12 @@ public class SimpleExecutor implements Executor {
             }
             resultList.add((E) resultObj);
         }
+        connection.close();
         return resultList;
     }
 
     private Class<?> getClassType(String parameterType) throws ClassNotFoundException {
-        if (parameterType!=null) {
+        if (parameterType != null) {
             return Class.forName(parameterType);
         }
         return null;
@@ -84,6 +90,6 @@ public class SimpleExecutor implements Executor {
         String parseSql = genericTokenParser.parse(sql);
         // 解析后的参数名称
         List<ParameterMapping> parameterMappings = parameterMappingTokenHandler.getParameterMappings();
-        return new BoundSql(parseSql,parameterMappings);
+        return new BoundSql(parseSql, parameterMappings);
     }
 }
