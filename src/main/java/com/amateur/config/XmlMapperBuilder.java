@@ -31,10 +31,8 @@ public class XmlMapperBuilder {
             String id = element.attributeValue("id");
             String resultType = element.attributeValue("resultType");
             String parameterType = element.attributeValue("parameterType");
-            String useCache = element.attributeValue("useCache");
             String sqlText = element.getTextTrim();
             MappedStatement mappedStatement = new MappedStatement();
-            mappedStatement.setUseCache(useCache==null||"true".equalsIgnoreCase(useCache));
             mappedStatement.setId(id);
             mappedStatement.setParameterType(parameterType);
             mappedStatement.setSql(sqlText);

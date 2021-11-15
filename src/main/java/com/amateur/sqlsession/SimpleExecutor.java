@@ -1,6 +1,7 @@
 package com.amateur.sqlsession;
 
 import com.amateur.cache.Cache;
+import com.amateur.cache.CacheKey;
 import com.amateur.config.BoundSql;
 import com.amateur.pojo.Configuration;
 import com.amateur.pojo.MappedStatement;
@@ -24,8 +25,9 @@ import java.util.List;
  */
 public class SimpleExecutor implements Executor {
 
-    @Override
-    public <E> List<E> query(Configuration configuration, MappedStatement mappedStatement, Object... params) throws Exception {
+    private final Cache cache = new Cache();
+
+    private <E> List<E> doQuery(Configuration configuration,MappedStatement mappedStatement,Object... params) throws Exception {
         // 1.注册驱动 获取数据库连接
         Connection connection = configuration.getDataSource().getConnection();
         // 2.获取sql语句 select * from user where id = #{id}
@@ -71,6 +73,18 @@ public class SimpleExecutor implements Executor {
         }
         connection.close();
         return resultList;
+    }
+
+    @Override
+    public <E> List<E> query(Configuration configuration, MappedStatement mappedStatement, Object... params) throws Exception {
+        CacheKey cacheKey = CacheKey.createdCacheKey(mappedStatement, params);
+        if (cache.getObject(cacheKey) != null) {
+            return (List<E>) cache.getObject(cacheKey);
+        } else {
+            List<E> list = doQuery(configuration, mappedStatement, params);
+            cache.putObject(cacheKey,list);
+            return list;
+        }
     }
 
     private Class<?> getClassType(String parameterType) throws ClassNotFoundException {

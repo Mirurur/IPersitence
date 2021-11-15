@@ -1,9 +1,9 @@
 <mapper namespace="com.amateur.IUserDao">
-    <select id="findAll" resultType="com.amateur.User" useCache="true">
+    <select id="findAll" resultType="com.amateur.User">
         select * from user;
     </select>
 
-    <select id="findById" resultType="com.amateur.User" parameterType="com.amateur.User" useCache="true">
+    <select id="findById" resultType="com.amateur.User" parameterType="com.amateur.User">
         select * from user where id = #{id};
     </select>
 </mapper>

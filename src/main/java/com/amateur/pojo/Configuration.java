@@ -1,7 +1,6 @@
 package com.amateur.pojo;
 
-import com.amateur.cache.Cache;
-import com.amateur.sqlsession.CacheExecutor;
+import com.amateur.sqlsession.Executor;
 import com.amateur.sqlsession.SimpleExecutor;
 
 import javax.sql.DataSource;
@@ -23,12 +22,10 @@ public class Configuration {
      * key: statementId
      * value: 封装好的mappedStatement对象
      */
-    private Map<String,MappedStatement> mappedStatementMap = new HashMap<>();
+    private Map<String, MappedStatement> mappedStatementMap = new HashMap<>();
 
-    private CacheExecutor cacheExecutor;
-
-    public synchronized CacheExecutor newCacheExecutor() {
-        return new CacheExecutor(new SimpleExecutor());
+    public synchronized Executor newExecutor() {
+        return new SimpleExecutor();
     }
 
     public DataSource getDataSource() {
