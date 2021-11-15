@@ -43,7 +43,7 @@ public class CacheKey {
         this.params = params;
     }
 
-    public static CacheKey createdCacheKey(MappedStatement mappedStatement, Object... params) {
+    public static CacheKey createdCacheKey(MappedStatement mappedStatement, Object... params) throws Exception {
         CacheKey cacheKey = new CacheKey();
         cacheKey.setSqlText(mappedStatement.getSql());
         cacheKey.setStatementId(mappedStatement.getId());
@@ -52,11 +52,7 @@ public class CacheKey {
             Map<String, String> map = new HashMap<>();
             for (Field field : param.getClass().getDeclaredFields()) {
                 field.setAccessible(true);
-                try {
-                    map.put(field.getName(), field.get(param)==null?"":field.get(param).toString());
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+                map.put(field.getName(), field.get(param)==null?"":field.get(param).toString());
             }
             cacheKey.setParams(map);
         }
