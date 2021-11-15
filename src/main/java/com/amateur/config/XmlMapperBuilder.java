@@ -16,7 +16,7 @@ import java.util.List;
  * @date 2021-11-10 21:31
  */
 public class XmlMapperBuilder {
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public XmlMapperBuilder(Configuration configuration) {
         this.configuration = configuration;
