@@ -1,3 +1,10 @@
 # 项目排除路径
 /target/
 .idea
+*.iml
+
+# Ignore Logs
+logs
+*.log
+
+

@@ -16,7 +16,7 @@ import java.util.List;
  * @date 2021-11-10 21:31
  */
 public class XmlMapperBuilder {
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public XmlMapperBuilder(Configuration configuration) {
         this.configuration = configuration;
@@ -31,10 +31,8 @@ public class XmlMapperBuilder {
             String id = element.attributeValue("id");
             String resultType = element.attributeValue("resultType");
             String parameterType = element.attributeValue("parameterType");
-            String useCache = element.attributeValue("useCache");
             String sqlText = element.getTextTrim();
             MappedStatement mappedStatement = new MappedStatement();
-            mappedStatement.setUseCache(useCache==null||"true".equalsIgnoreCase(useCache));
             mappedStatement.setId(id);
             mappedStatement.setParameterType(parameterType);
             mappedStatement.setSql(sqlText);

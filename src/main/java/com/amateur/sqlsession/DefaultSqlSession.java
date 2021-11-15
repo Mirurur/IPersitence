@@ -14,24 +14,18 @@ public class DefaultSqlSession implements SqlSession {
 
     private final Configuration configuration;
 
-    private CacheExecutor cacheExecutor;
+    private final Executor executor;
 
-    public DefaultSqlSession(Configuration configuration) {
+    public DefaultSqlSession(Configuration configuration,Executor executor) {
         this.configuration = configuration;
+        this.executor = executor;
     }
 
 
     @Override
     public <E> List<E> selectList(String statementId, Object... params) throws Exception {
         MappedStatement mappedStatement = configuration.getMappedStatementMap().get(statementId);
-        if (mappedStatement.getUseCache()) {
-            if (cacheExecutor == null) {
-                cacheExecutor = configuration.newCacheExecutor();
-            }
-            return cacheExecutor.query(configuration,mappedStatement,params);
-        }
-        SimpleExecutor simpleExecutor = new SimpleExecutor();
-        return simpleExecutor.query(configuration, mappedStatement, params);
+        return executor.query(configuration, mappedStatement, params);
     }
 
     @Override
