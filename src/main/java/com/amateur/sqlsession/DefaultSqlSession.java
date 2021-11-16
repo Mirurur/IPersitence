@@ -14,17 +14,23 @@ public class DefaultSqlSession implements SqlSession {
 
     private final Configuration configuration;
 
-    private final Executor executor;
+    private Executor executor;
 
-    public DefaultSqlSession(Configuration configuration,Executor executor) {
+    public DefaultSqlSession(Configuration configuration) {
         this.configuration = configuration;
-        this.executor = executor;
     }
 
 
     @Override
     public <E> List<E> selectList(String statementId, Object... params) throws Exception {
         MappedStatement mappedStatement = configuration.getMappedStatementMap().get(statementId);
+        if (executor==null) {
+            if (mappedStatement.getUseCache()) {
+                executor = configuration.newExecutor("2");
+            } else {
+                executor = configuration.newExecutor("1");
+            }
+        }
         return executor.query(configuration, mappedStatement, params);
     }
 

@@ -1,5 +1,6 @@
 package com.amateur.pojo;
 
+import com.amateur.sqlsession.CacheExecutor;
 import com.amateur.sqlsession.Executor;
 import com.amateur.sqlsession.SimpleExecutor;
 
@@ -24,8 +25,13 @@ public class Configuration {
      */
     private Map<String, MappedStatement> mappedStatementMap = new HashMap<>();
 
-    public synchronized Executor newExecutor() {
-        return new SimpleExecutor();
+    public synchronized Executor newExecutor(String type) {
+        if ("1".equals(type)) {
+            return new SimpleExecutor();
+        } else if ("2".equals(type)) {
+            return new CacheExecutor(new SimpleExecutor());
+        }
+        return null;
     }
 
     public DataSource getDataSource() {
