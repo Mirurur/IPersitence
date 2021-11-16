@@ -1,5 +1,7 @@
 package com.amateur.pojo;
 
+import com.amateur.cache.Cache;
+
 /**
  * @author yeyu
  * @date 2021/11/10 17:46
@@ -22,6 +24,8 @@ public class MappedStatement {
      * sql
      */
     private String sql;
+
+    private final Cache cache = new Cache();
     /**
      * 是否使用缓存
      */
@@ -65,5 +69,9 @@ public class MappedStatement {
 
     public void setUseCache(Boolean useCache) {
         this.useCache = useCache;
+    }
+
+    public Cache getCache() {
+        return cache;
     }
 }
